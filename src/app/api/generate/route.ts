@@ -14,8 +14,11 @@ export async function POST(req: NextRequest) {
                 "Content-Type": "text/plain; charset=utf-8",
             },
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("API Error:", error);
-        return new Response("Internal Server Error", { status: 500 });
+        return new Response(JSON.stringify({ error: error.message || "Internal Server Error" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+        });
     }
 }

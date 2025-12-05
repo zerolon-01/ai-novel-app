@@ -100,6 +100,11 @@ function GenerateContent() {
                 body: JSON.stringify({ prompt: promptText, context: currentContext }),
             });
 
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+            }
+
             if (!response.body) throw new Error("No response body");
 
             const reader = response.body.getReader();
@@ -139,9 +144,9 @@ function GenerateContent() {
                 // Don't block the user, just log the error
             }
 
-        } catch (error) {
+        } catch (error: any) {
             console.error("Generation failed", error);
-            alert("스토리 생성에 실패했습니다. 다시 시도해주세요.");
+            alert(`스토리 생성에 실패했습니다: ${error.message || "알 수 없는 오류가 발생했습니다."}`);
         } finally {
             setIsGenerating(false);
         }
