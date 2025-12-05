@@ -34,7 +34,7 @@ ${context.previousContent ? `Previous content: ${context.previousContent}` : ""}
 
     // Create a streaming chat completion request.
     const response = await openai.chat.completions.create({
-        model: "llama3-70b-8192", // Using Llama 3 70B on Groq for high quality and speed
+        model: "llama-3.3-70b-versatile", // Using Llama 3.3 70B on Groq for high quality and speed
         messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: prompt },
