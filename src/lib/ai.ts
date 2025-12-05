@@ -26,7 +26,7 @@ export async function generateStory(
 
     // Construct a system prompt that provides the story context.
     const systemPrompt = `You are an AI novelist. Write the next part of a story in a vivid, engaging style.
-IMPORTANT: You must write the story ONLY in Korean.
+CRITICAL INSTRUCTION: The output must be 100% in Korean. Do not use any English, Chinese, or other foreign characters. Even if the context contains other languages, translate and write the story in Korean.
 Title: ${context.title || "Untitled"}
 Genre: ${context.genre}
 Characters: ${context.characters.join(", ")}
@@ -38,7 +38,7 @@ ${context.previousContent ? `Previous content: ${context.previousContent}` : ""}
         model: "llama-3.3-70b-versatile", // Using Llama 3.3 70B on Groq for high quality and speed
         messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: prompt },
+            { role: "user", content: `${prompt}\n\n(Write ONLY in Korean)` },
         ],
         stream: true,
     });
@@ -52,7 +52,11 @@ ${context.previousContent ? `Previous content: ${context.previousContent}` : ""}
                 for await (const chunk of response) {
                     const content = chunk.choices[0].delta?.content;
                     if (content) {
-                        controller.enqueue(encoder.encode(content));
+                        // Filter out English (A-Za-z) and Chinese (\u4e00-\u9fff) characters
+                        const filteredContent = content.replace(/[a-zA-Z\u4e00-\u9fff]+/g, "");
+                        if (filteredContent) {
+                            controller.enqueue(encoder.encode(filteredContent));
+                        }
                     }
                 }
                 controller.close();
