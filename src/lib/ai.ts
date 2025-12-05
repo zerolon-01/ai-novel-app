@@ -26,6 +26,7 @@ export async function generateStory(
 
     // Construct a system prompt that provides the story context.
     const systemPrompt = `You are an AI novelist. Write the next part of a story in a vivid, engaging style.
+IMPORTANT: You must write the story ONLY in Korean.
 Title: ${context.title || "Untitled"}
 Genre: ${context.genre}
 Characters: ${context.characters.join(", ")}
