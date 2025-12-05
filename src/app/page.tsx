@@ -12,7 +12,7 @@ export default function Home() {
 
   const handleSubscribe = async (priceId: string) => {
     if (!user) {
-      await loginWithGoogle();
+      router.push('/login');
       return;
     }
 

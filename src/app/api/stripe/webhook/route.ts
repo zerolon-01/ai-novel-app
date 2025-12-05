@@ -43,16 +43,22 @@ export async function POST(req: Request) {
         }
 
         // Update user profile with subscription details
-        // Assuming we have a 'profiles' table or similar linked to auth.users
+        // Determine tier based on priceId
+        const priceId = subscription.items.data[0]?.price.id;
+        let tier: 'FREE' | 'BASIC' = 'BASIC';
+
+        // If you have multiple price IDs in the future, add logic here
+        // For now, any successful subscription is BASIC tier
+
         const { error } = await supabaseAdmin
             .from('profiles')
             .update({
                 stripe_customer_id: session.customer as string,
                 subscription_id: subscription.id,
-                subscription_tier: 'PRO', // Logic to determine tier based on priceId needed if multiple tiers
+                subscription_tier: tier,
                 subscription_status: 'active',
-                // Update credits based on tier if needed
-                credits: 999999, // Unlimited for paid plans
+                // Unlimited credits for BASIC tier
+                credits: 999999,
             })
             .eq('id', session.metadata.userId);
 

@@ -34,7 +34,7 @@ export interface Profile {
     email: string;
     full_name?: string;
     credits: number;
-    subscription_tier: 'FREE' | 'BASIC' | 'PRO';
+    subscription_tier: 'FREE' | 'BASIC';
     subscription_status: 'active' | 'canceled' | 'past_due' | 'trialing' | null;
     stripe_customer_id?: string;
 }

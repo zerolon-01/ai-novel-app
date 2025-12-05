@@ -24,13 +24,24 @@ export default function SignupPage() {
         setIsSubmitting(true);
 
         try {
-            const success = await signup(name, email, password);
+            const { success, error, data } = await signup(name, email, password);
             if (success) {
-                router.push("/");
+                if (data?.session) {
+                    router.push("/");
+                } else {
+                    // Session is null, meaning email confirmation is required
+                    setError("가입이 완료되었습니다. 이메일을 확인하여 계정을 인증해주세요.");
+                    // Optional: Clear form or redirect to a specific verification page
+                }
             } else {
-                setError("이미 존재하는 이메일입니다.");
+                if (error?.message === "User already registered") {
+                    setError("이미 존재하는 이메일입니다.");
+                } else {
+                    setError(error?.message || "회원가입 중 오류가 발생했습니다.");
+                }
             }
         } catch (err) {
+            console.error("Signup exception:", err);
             setError("회원가입 중 오류가 발생했습니다.");
         } finally {
             setIsSubmitting(false);

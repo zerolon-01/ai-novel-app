@@ -12,31 +12,23 @@ export function SubscriptionPricing({ onSubscribe, currentTier = 'FREE' }: Prici
         {
             name: "FREE",
             price: "₩0",
-            description: "For hobbyists",
-            features: ["Daily 3 generations", "Standard speed", "Community support"],
+            description: "취미로 즐기는 분들을 위한",
+            features: ["하루 3회 생성", "표준 속도", "커뮤니티 지원"],
             priceId: "free",
             tier: "FREE"
         },
         {
             name: "BASIC",
             price: "₩4,900",
-            description: "For creators",
-            features: ["Unlimited generations", "Fast speed", "Email support"],
-            priceId: "price_basic_id_placeholder", // Replace with actual Stripe Price ID
+            description: "창작자를 위한",
+            features: ["무제한 생성", "빠른 속도", "이메일 지원"],
+            priceId: "price_1QVmMnQ72u5FI556aBbJjOTt", // Replace with your actual Stripe Price ID
             tier: "BASIC"
-        },
-        {
-            name: "PRO",
-            price: "₩9,900",
-            description: "For professionals",
-            features: ["Everything in Basic", "GPT-4o & Claude-3.5", "Priority support"],
-            priceId: "price_pro_id_placeholder", // Replace with actual Stripe Price ID
-            tier: "PRO"
         }
     ];
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {plans.map((plan) => (
                 <Card key={plan.name} className={plan.tier === currentTier ? "border-primary" : ""}>
                     <CardHeader>

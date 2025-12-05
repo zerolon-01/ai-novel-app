@@ -11,8 +11,8 @@ interface AuthContextType {
     profile: Profile | null;
     isLoading: boolean;
     loginWithGoogle: () => Promise<void>;
-    login: (email: string, password: string) => Promise<boolean>;
-    signup: (name: string, email: string, password: string) => Promise<boolean>;
+    login: (email: string, password: string) => Promise<{ success: boolean; error: any }>;
+    signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error: any; data?: any }>;
     logout: () => Promise<void>;
 }
 
@@ -80,15 +80,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const login = async (email: string, password: string) => {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
         });
-        return !error;
+        if (error) {
+            console.error("Login error:", error);
+        }
+        return { success: !error, error };
     };
 
     const signup = async (name: string, email: string, password: string) => {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
             email,
             password,
             options: {
@@ -97,7 +100,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 },
             },
         });
-        return !error;
+        if (error) {
+            console.error("Signup error:", error);
+        }
+        return { success: !error, error, data };
     };
 
     const logout = async () => {

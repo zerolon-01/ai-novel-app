@@ -72,7 +72,8 @@ function GenerateContent() {
 
         if (profile) {
             if (profile.subscription_tier === 'FREE' && profile.credits <= 0) {
-                alert("일일 무료 크레딧을 모두 소진했습니다. 무제한 생성을 위해 구독해주세요!");
+                alert("일일 무료 크레딧을 모두 소진했습니다. BASIC 요금제로 업그레이드하여 무제한 생성을 즐기세요!");
+                router.push("/");
                 return;
             }
         }
@@ -120,14 +121,27 @@ function GenerateContent() {
                 ));
             }
 
-            // Decrement credits if successful and not unlimited
-            // In a real app, this should be done server-side securely.
-            // For this prototype, we'll simulate it or call an API to decrement.
-            // We'll skip the API call for now as we don't have a decrement endpoint yet,
-            // but the check above enforces the limit based on the fetched profile.
+            // Decrement credits after successful generation
+            try {
+                const creditResponse = await fetch("/api/decrement-credits", {
+                    method: "POST",
+                });
+
+                if (creditResponse.ok) {
+                    const { credits } = await creditResponse.json();
+                    console.log(`Credits remaining: ${credits}`);
+                } else if (creditResponse.status === 403) {
+                    // This shouldn't happen as we check before generation, but just in case
+                    console.warn("Credits exhausted during generation");
+                }
+            } catch (creditError) {
+                console.error("Failed to decrement credits:", creditError);
+                // Don't block the user, just log the error
+            }
 
         } catch (error) {
             console.error("Generation failed", error);
+            alert("스토리 생성에 실패했습니다. 다시 시도해주세요.");
         } finally {
             setIsGenerating(false);
         }
